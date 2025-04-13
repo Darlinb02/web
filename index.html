@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GroupChat - Mensajería Grupal</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- PANTALLA DE AUTENTICACIÓN -->
+    <div class="auth-container" id="auth-screen">
+        <div class="auth-card">
+            <div class="logo">
+                <i class="fas fa-users"></i>
+                <h1>GroupChat</h1>
+            </div>
+            
+            <div class="auth-tabs">
+                <button class="tab-btn active" data-target="login-form">Iniciar Sesión</button>
+                <button class="tab-btn" data-target="register-form">Registrarse</button>
+            </div>
+            
+            <!-- FORMULARIO DE INICIO DE SESIÓN -->
+            <form id="login-form" class="auth-form">
+                <div class="form-group">
+                    <label for="login-email">Email:</label>
+                    <input type="email" id="login-email" required>
+                </div>
+                <div class="form-group">
+                    <label for="login-password">Contraseña:</label>
+                    <input type="password" id="login-password" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Iniciar Sesión</button>
+            </form>
+            
+            <!-- FORMULARIO DE REGISTRO -->
+            <form id="register-form" class="auth-form" style="display: none;">
+                <div class="form-group">
+                    <label for="register-name">Nombre:</label>
+                    <input type="text" id="register-name" required>
+                </div>
+                <div class="form-group">
+                    <label for="register-email">Email:</label>
+                    <input type="email" id="register-email" required>
+                </div>
+                <div class="form-group">
+                    <label for="register-password">Contraseña:</label>
+                    <input type="password" id="register-password" required>
+                </div>
+                <div class="form-group">
+                    <label for="register-confirm-password">Confirmar Contraseña:</label>
+                    <input type="password" id="register-confirm-password" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Registrarse</button>
+            </form>
+        </div>
+    </div>
+    
+    <!-- PANTALLA PRINCIPAL DE LA APLICACIÓN -->
+    <div class="app-container" id="app-screen" style="display: none;">
+        <!-- SIDEBAR DE GRUPOS -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <div class="user-info">
+                    <div class="user-avatar" id="user-avatar">
+                        <span id="user-initial">U</span>
+                    </div>
+                    <span id="user-name">Usuario</span>
+                </div>
+                <div class="sidebar-actions">
+                    <button class="icon-btn" id="logout-btn" title="Cerrar sesión">
+                        <i class="fas fa-sign-out-alt"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="sidebar-nav">
+                <button class="nav-btn active" id="group-chats-btn">Grupos</button>
+                <button class="nav-btn" id="private-chats-btn">Mensajes</button>
+            </div>
+            
+            <div class="section-header">
+                <h2 class="section-title" id="chats-section-title">Grupos</h2>
+                <div>
+                    <button class="icon-btn" id="create-group-btn" title="Crear grupo">
+                        <i class="fas fa-plus"></i>
+                    </button>
+                    <button class="icon-btn" id="new-private-chat-btn" title="Nuevo chat" style="display: none;">
+                        <i class="fas fa-plus"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="search-container">
+                <i class="fas fa-search"></i>
+                <input type="text" id="search-groups" placeholder="Buscar...">
+            </div>
+            
+            <div class="groups-container" id="groups-list">
+                <!-- Los grupos se mostrarán aquí dinámicamente -->
+            </div>
+        </div>
+        
+        <!-- ÁREA DE CHAT -->
+        <div class="chat-area">
+            <!-- Encabezado del chat -->
+            <div class="chat-header">
+                <div class="group-info">
+                    <div class="group-avatar">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="group-details">
+                        <h2 id="current-group-name">Selecciona un grupo</h2>
+                        <p id="current-group-members">0 miembros</p>
+                    </div>
+                </div>
+                <div class="chat-actions">
+                    <button id="group-info-btn" class="icon-btn" title="Información del Grupo">
+                        <i class="fas fa-info-circle"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Contenedor de mensajes -->
+            <div class="messages-container" id="messages-container">
+                <div class="no-group-selected">
+                    <i class="fas fa-comments"></i>
+                    <p>Selecciona o crea un grupo para comenzar a chatear</p>
+                </div>
+                <!-- Los mensajes se cargarán dinámicamente -->
+            </div>
+            
+            <!-- Área de entrada de mensajes -->
+            <div class="message-input-container" id="message-input-area">
+                <div class="attachments-btn">
+                    <button id="attachment-btn" class="icon-btn" title="Adjuntar archivo">
+                        <i class="fas fa-paperclip"></i>
+                    </button>
+                    <div class="attachment-options" id="attachment-options">
+                        <button class="attach-option" id="image-upload" title="Imagen">
+                            <i class="fas fa-image"></i>
+                        </button>
+                        <button class="attach-option" id="video-upload" title="Video">
+                            <i class="fas fa-video"></i>
+                        </button>
+                        <input type="file" id="file-upload" style="display: none;" accept="image/*,video/*">
+                    </div>
+                </div>
+                
+                <div class="emoji-btn">
+                    <button id="emoji-btn" class="icon-btn" title="Emojis">
+                        <i class="fas fa-smile"></i>
+                    </button>
+                    <div class="emoji-picker" id="emoji-picker">
+                        <!-- Emojis se cargarán dinámicamente -->
+                    </div>
+                </div>
+                
+                <input type="text" id="message-input" placeholder="Escribe un mensaje...">
+                
+                <div class="voice-record-btn">
+                    <button id="voice-btn" class="icon-btn" title="Nota de voz">
+                        <i class="fas fa-microphone"></i>
+                    </button>
+                </div>
+                
+                <button id="send-message-btn" class="icon-btn send-btn" title="Enviar">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- MODAL PARA CREAR GRUPO -->
+    <div class="modal" id="create-group-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Crear Nuevo Grupo</h2>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="create-group-form">
+                    <div class="form-group">
+                        <label for="group-name">Nombre del Grupo:</label>
+                        <input type="text" id="group-name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="group-description">Descripción:</label>
+                        <textarea id="group-description" rows="3"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Formato del grupo:</label>
+                        <div class="format-options">
+                            <label class="format-option">
+                                <input type="radio" name="group-format" value="chat" checked>
+                                <span>Chat</span>
+                            </label>
+                            <label class="format-option">
+                                <input type="radio" name="group-format" value="forum">
+                                <span>Foro</span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Miembros administradores adicionales:</label>
+                        <div class="admin-roles">
+                            <div class="admin-role-item">
+                                <label for="vice-president-email">Vicepresidente:</label>
+                                <div class="role-select-container">
+                                    <input type="email" id="vice-president-email" placeholder="Email del vicepresidente">
+                                    <button type="button" id="select-vice-president" class="select-member-btn">
+                                        <i class="fas fa-user-plus"></i> Seleccionar
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="admin-role-item">
+                                <label for="governor-email">Gobernador:</label>
+                                <div class="role-select-container">
+                                    <input type="email" id="governor-email" placeholder="Email del gobernador">
+                                    <button type="button" id="select-governor" class="select-member-btn">
+                                        <i class="fas fa-user-plus"></i> Seleccionar
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <small class="roles-info">Tú serás automáticamente el Presidente del grupo</small>
+                    </div>
+                    <div class="form-group">
+                        <label>Ícono del Grupo:</label>
+                        <div class="group-icon-options">
+                            <label class="icon-option">
+                                <input type="radio" name="group-icon" value="users" checked>
+                                <i class="fas fa-users"></i>
+                            </label>
+                            <label class="icon-option">
+                                <input type="radio" name="group-icon" value="graduation-cap">
+                                <i class="fas fa-graduation-cap"></i>
+                            </label>
+                            <label class="icon-option">
+                                <input type="radio" name="group-icon" value="briefcase">
+                                <i class="fas fa-briefcase"></i>
+                            </label>
+                            <label class="icon-option">
+                                <input type="radio" name="group-icon" value="heart">
+                                <i class="fas fa-heart"></i>
+                            </label>
+                            <label class="icon-option">
+                                <input type="radio" name="group-icon" value="gamepad">
+                                <i class="fas fa-gamepad"></i>
+                            </label>
+                            <label class="icon-option">
+                                <input type="radio" name="group-icon" value="utensils">
+                                <i class="fas fa-utensils"></i>
+                            </label>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Crear Grupo</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <!-- MODAL PARA SELECCIONAR MIEMBROS -->
+    <div class="modal" id="select-member-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Seleccionar Miembro</h2>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <input type="text" id="search-members" placeholder="Buscar por nombre o email...">
+                </div>
+                <div class="members-selection-list" id="members-selection-list">
+                    <!-- Los usuarios se mostrarán aquí dinámicamente -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" id="cancel-select-member">Cancelar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- MODAL DE INFORMACIÓN DEL GRUPO -->
+    <div id="group-info-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="group-name-display"></h2>
+                <span class="close-button" onclick="closeModal('group-info-modal')">&times;</span>
+            </div>
+            <div class="modal-body">
+                <p id="group-description-display"></p>
+                
+                <h3>Miembros</h3>
+                <div id="members-list" class="members-list">
+                    <!-- La lista de miembros se generará dinámicamente -->
+                </div>
+                
+                <div id="admin-options" class="admin-actions" style="display: none;">
+                    <button id="add-member-btn" class="btn-secondary">Añadir miembro</button>
+                    <button id="delete-group-btn" class="btn-danger">Eliminar grupo</button>
+                    
+                    <div id="add-member-form" style="display: none;">
+                        <div class="form-group">
+                            <label for="member-email">Email del nuevo miembro:</label>
+                            <input type="email" id="member-email" placeholder="ejemplo@correo.com">
+                        </div>
+                        <div class="form-actions">
+                            <button id="add-member-cancel" class="btn-secondary">Cancelar</button>
+                            <button id="add-member-submit" class="btn-primary">Añadir</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- MODAL PARA VISUALIZAR MEDIA -->
+    <div class="modal" id="media-view-modal">
+        <div class="modal-content media-content">
+            <button class="close-modal">&times;</button>
+            <div class="media-container" id="media-container">
+                <!-- Aquí se mostrará la imagen o video -->
+            </div>
+        </div>
+    </div>
+    
+    <!-- OVERLAY PARA GRABACIÓN DE VOZ -->
+    <div class="voice-recorder-overlay" id="voice-recorder-overlay">
+        <div class="voice-recorder-container">
+            <div class="voice-animation" id="voice-animation">
+                <div class="bar"></div>
+                <div class="bar"></div>
+                <div class="bar"></div>
+                <div class="bar"></div>
+                <div class="bar"></div>
+            </div>
+            <div class="recording-time" id="recording-time">00:00</div>
+            <div class="voice-recorder-actions">
+                <button id="cancel-recording" class="voice-action-btn">
+                    <i class="fas fa-times"></i>
+                </button>
+                <button id="stop-recording" class="voice-action-btn">
+                    <i class="fas fa-stop"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- MODAL PARA NUEVO CHAT PRIVADO -->
+    <div class="modal" id="new-chat-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Iniciar Nuevo Chat</h2>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <input type="text" id="search-users" placeholder="Buscar usuario por nombre o email...">
+                </div>
+                <div id="users-list" class="users-list">
+                    <!-- Los usuarios se mostrarán aquí dinámicamente -->
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="script.js"></script>
+</body>
+</html> 
